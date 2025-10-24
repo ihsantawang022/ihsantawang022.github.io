@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Math Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ELEMEN AUDIO MUSIK LATAR -->
+    <audio id="background-music" loop>
+        <source src="Kids Happy Funny Background Music For Videos.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <!-- ELEMEN AUDIO SUARA KLIK -->
+    <audio id="click-sound">
+        <source src="klik.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ELEMEN AUDIO SUARA KEMENANGAN DITAMBAHKAN DI SINI -->
+    <audio id="win-sound">
+        <source src="winsound.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="main-menu">
+        <div class="logo-container">
+            <img src="Quick-Photoroom.png" alt="Logo Kuis Cepat" class="logo">
+        </div>
+        <button id="start-btn" class="btn">Start Quiz</button>
+        <div id="mode-selection" style="display: none;">
+            <h2>Select Mode</h2>
+            <button id="one-player" class="btn">One Player</button>
+            <button id="two-player" class="btn">Two Players</button>
+        </div>
+        <div id="operation-selection" style="display: none;">
+            <h2>Select Operation</h2>
+            <button class="op-btn" data-op="addition">
+                <img src="https://img.icons8.com/color/32/000000/plus-math.png" alt="Addition" class="op-icon" onerror="this.outerHTML='<span class=\'fallback-icon\'>+</span>'"/>
+                Addition
+            </button>
+            <button class="op-btn" data-op="subtraction">
+                <img src="https://img.icons8.com/color/32/000000/minus-math.png" alt="Subtraction" class="op-icon" onerror="this.outerHTML='<span class=\'fallback-icon\'>-</span>'"/>
+                Subtraction
+            </button>
+            <button class="op-btn" data-op="multiplication">
+                <img src="https://img.icons8.com/color/32/000000/multiply.png" alt="Multiplication" class="op-icon" onerror="this.outerHTML='<span class=\'fallback-icon\'>×</span>'"/>
+                Multiplication
+            </button>
+            <button class="op-btn" data-op="division">
+                <img src="https://img.icons8.com/color/32/000000/divide.png" alt="Division" class="op-icon" onerror="this.outerHTML='<span class=\'fallback-icon\'>÷</span>'"/>
+                Division
+            </button>
+            <button id="op-mixed" class="op-btn" data-op="mixed">
+                <img src="https://img.icons8.com/color/32/000000/question-mark.png" alt="Mixed" class="op-icon" onerror="this.outerHTML='<span class=\'fallback-icon\'>?</span>'"/>
+                Mixed
+            </button>
+        </div>
+        <div id="difficulty-selection" style="display: none;">
+            <h2>Select Difficulty</h2>
+            <button id="difficulty-easy" class="btn">Easy</button>
+            <button id="difficulty-medium" class="btn">Medium</button>
+            <button id="difficulty-hard" class="btn">Hard</button>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <div id="player1-box" class="game-box">
+            <h2>Player 1</h2>
+            <div id="q1" class="question"></div>
+            <div id="opt1" class="options"></div>
+            <div class="progress-bar-container">
+                <div id="progress-bar-P1" class="progress-bar"></div>
+            </div>
+        </div>
+        <div id="divider" class="divider">VS</div>
+        <div id="player2-box" class="game-box" style="display: none;">
+            <h2>Player 2</h2>
+            <div id="q2" class="question"></div>
+            <div id="opt2" class="options"></div>
+            <div class="progress-bar-container">
+                <div id="progress-bar-P2" class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-container">
+        <h2>Game Over</h2>
+        <div id="score"></div>
+        <div id="answer-preview-wrapper">
+             <table id="answer-preview"></table>
+        </div>
+        <button id="play-again-btn" class="btn">Play Again</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
