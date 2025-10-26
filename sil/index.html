@@ -23,7 +23,7 @@
 
   <div id="tree"></div>
 
-  <!-- Modal popup untuk tambah anggota -->
+  <!-- Modal tambah anggota -->
   <div id="modal" class="modal" aria-hidden="true">
     <div id="modalOverlay" class="modal-overlay"></div>
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <!-- Edit member modal (rename + set birth/death/photo) -->
+  <!-- Edit member modal -->
   <div id="editModal" class="modal" aria-hidden="true">
     <div id="editOverlay" class="modal-overlay"></div>
     <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
@@ -58,13 +58,14 @@
         <input type="date" id="editBirth" />
         <input type="date" id="editDeath" />
         <input type="file" id="editPhoto" accept="image/*" />
+        <div class="autocomplete-wrapper">
+          <input type="text" id="editSpouse" placeholder="Pasangan (ketik untuk cari) — kosong untuk lepaskan" autocomplete="off" />
+          <div id="spouseAutocomplete" class="autocomplete-list" role="listbox" aria-label="Saran pasangan"></div>
+        </div>
         <div class="modal-actions">
           <button id="confirmEditBtn" onclick="confirmEdit()">Simpan</button>
           <button id="cancelEditBtn" onclick="closeEditModal()">Batal</button>
-          <!-- Tombol hapus anggota -->
           <button id="deleteMemberBtn" onclick="deleteFromEditModal()" title="Hapus anggota" class="delete-action">Hapus</button>
-          <!-- Tombol atur pasangan -->
-          <button id="marryBtn" onclick="showMarryPrompt(document.getElementById('currentName').value)" title="Atur pasangan">Atur pasangan</button>
         </div>
       </div>
     </div>
