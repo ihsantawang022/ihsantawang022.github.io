@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Quiz — I Was in Bali (Full)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header"><h1>Quiz — Full Assessment</h1><p class="small">Multiple choice + short answers + exercises</p></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="lesson.html">Lesson</a>
+    <a href="exercise.html">Exercise</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="report.html">Report</a>
+  </nav>
+  <div class="container">
+    <div class="card">
+      <h2>Part A — Multiple Choice (choose one)</h2>
+      <div class="quiz-item mcq" data-answer="were">
+        <div>1. They ____ at the library yesterday.</div>
+        <label><input type="radio" name="q1" value="was"> was</label>
+        <label><input type="radio" name="q1" value="were"> were</label>
+      </div>
+      <div class="quiz-item mcq" data-answer="was">
+        <div>2. She ____ at the market last Sunday.</div>
+        <label><input type="radio" name="q2" value="was"> was</label>
+        <label><input type="radio" name="q2" value="were"> were</label>
+      </div>
+      <div class="quiz-item mcq" data-answer="was">
+        <div>3. I ____ in Bali last week.</div>
+        <label><input type="radio" name="q3" value="was"> was</label>
+        <label><input type="radio" name="q3" value="were"> were</label>
+      </div>
+      <div class="quiz-item mcq" data-answer="were">
+        <div>4. Made and Joshua ____ at the playground.</div>
+        <label><input type="radio" name="q4" value="was"> was</label>
+        <label><input type="radio" name="q4" value="were"> were</label>
+      </div>
+      <div class="quiz-item mcq" data-answer="was">
+        <div>5. Kimi ____ on the roof yesterday afternoon.</div>
+        <label><input type="radio" name="q5" value="was"> was</label>
+        <label><input type="radio" name="q5" value="were"> were</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Part B — Short answer</h2>
+      <div class="quiz-item short" data-answer="was">
+        <div>6. Fill: She ____ in Bali last week.</div>
+        <input type="text">
+      </div>
+      <div class="quiz-item short" data-answer="were">
+        <div>7. Fill: They ____ at the playground yesterday.</div>
+        <input type="text">
+      </div>
+    </div>
+
+    <div class="card" id="match-section" data-total="6">
+      <h2>Part C — Matching & Fill (included)</h2>
+      <p>This part includes exercises from the Exercise page (matching + fill). The script will include these when grading if present on the same page.</p>
+      <p>Tip: after you finish other pages you can return here and copy answers into the page if needed.</p>
+    </div>
+
+    <div style="margin-top:12px" class="center">
+      <button class="btn" onclick="gradeQuiz()">Submit All & Grade</button>
+      <div id="quiz-result" style="margin-top:12px"></div>
+      <div id="quiz-feedback" style="margin-top:8px;color:#0b84ff;font-weight:600"></div>
+    </div>
+
+    <div style="margin-top:14px;" class="card">
+      <h3>Previous result</h3>
+      <div id="prev-result" class="small"></div>
+    </div>
+
+  </div>
+  <div class="footer">Quiz page — results saved to localStorage</div>
+  <script src="script.js"></script>
+  <script>
+    // show last quiz if exists
+    const last = JSON.parse(localStorage.getItem('lastQuiz')||'null');
+    if(last){ document.getElementById('prev-result').innerText = `Last score: ${last.score}/${last.total} (${last.pct}%) on ${new Date(last.date).toLocaleString()}`; }
+  </script>
+</body>
+</html>

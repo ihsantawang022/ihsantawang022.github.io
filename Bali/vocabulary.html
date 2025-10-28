@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Made’s Holiday in Bali – Vocabulary Lesson</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+<h1>Made’s Holiday in Bali – Vocabulary Lesson</h1>
+<p class="small">Flashcards • Drag & Drop • Quiz — English–Indonesia</p>
+</header>
+<nav>
+<a href="index.html">Home</a>
+<a href="lesson.html">Lesson</a>
+<a href="exercise.html">Exercise</a>
+<a href="quiz.html">Quiz</a>
+<a href="report.html">Report</a>
+<a href="vocabulary.html">Vocabulary</a>
+</nav>
+<div class="container">
+<div class="tab-buttons">
+<button class="tab-btn active" data-tab="flashcards" onclick="openTab('flashcards')">Flashcards</button>
+<button class="tab-btn" data-tab="drag" onclick="openTab('drag')">Drag & Drop Game</button>
+<button class="tab-btn" data-tab="quiz" onclick="openTab('quiz')">Quiz</button>
+</div>
+<div class="tab-content active" id="flashcards">
+<div class="flashcards">
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">holiday</div><div class="back" style="display:none;">liburan <button onclick='speak("holiday")'>🔊</button></div></div>
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">beach</div><div class="back" style="display:none;">pantai <button onclick='speak("beach")'>🔊</button></div></div>
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">souvenirs</div><div class="back" style="display:none;">oleh-oleh <button onclick='speak("souvenirs")'>🔊</button></div></div>
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">grilled shrimp</div><div class="back" style="display:none;">udang bakar <button onclick='speak("grilled shrimp")'>🔊</button></div></div>
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">family</div><div class="back" style="display:none;">keluarga <button onclick='speak("family")'>🔊</button></div></div>
+<div class="flashcard" onclick="toggleCard(this)"><div class="front">laugh</div><div class="back" style="display:none;">tertawa <button onclick='speak("laugh")'>🔊</button></div></div>
+</div></div>
+<div class="tab-content" id="drag">
+<p>Drag kata ke kategori yang sesuai!</p>
+<div class="drag-area">
+<div class="draggable" draggable="true" data-cat="travel">holiday</div>
+<div class="draggable" draggable="true" data-cat="food">grilled shrimp</div>
+<div class="draggable" draggable="true" data-cat="place">beach</div>
+<div class="draggable" draggable="true" data-cat="people">father</div>
+<div class="draggable" draggable="true" data-cat="activity">laughed</div>
+</div>
+<div class="grid">
+<div class="card"><h3>Travel</h3><div class="dropzone" data-key="travel"></div></div>
+<div class="card"><h3>Food</h3><div class="dropzone" data-key="food"></div></div>
+<div class="card"><h3>Places</h3><div class="dropzone" data-key="place"></div></div>
+<div class="card"><h3>People</h3><div class="dropzone" data-key="people"></div></div>
+<div class="card"><h3>Activities</h3><div class="dropzone" data-key="activity"></div></div>
+</div>
+<button class="btn" style="margin-top:12px" onclick="checkDrag()">Check Answers</button>
+</div>
+<div class="tab-content" id="quiz">
+<div class="quiz-item" data-answer="holiday">1. Kata untuk “liburan” dalam Bahasa Inggris: <input></div>
+<div class="quiz-item" data-answer="beach">2. I swam at the ______ yesterday. (pantai) <input></div>
+<div class="quiz-item" data-answer="grilled shrimp">3. “Udang bakar” in English is: <input></div>
+<div class="quiz-item" data-answer="souvenirs">4. What did you buy? I bought some ______. (oleh-oleh) <input></div>
+<button class="btn" onclick="gradeQuiz()">Check Quiz</button>
+</div>
+</div>
+<div class="footer">Vocabulary page — integrated with I Was in Bali website</div>
+<script src="script.js"></script>
+</body>
+</html>

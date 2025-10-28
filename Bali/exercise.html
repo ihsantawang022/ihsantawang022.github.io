@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exercise – Drag & Drop Game (20 items)</title>
+<style>
+:root{--accent:#0b91b5;--bg:#f7fbfd;--card:#fff;--muted:#64748b}
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Arial;margin:0;background:var(--bg);color:#0f1724}
+.header{background:linear-gradient(135deg,var(--accent),#6dd5ed);color:#fff;padding:28px 12px;text-align:center}
+nav{display:flex;justify-content:center;gap:10px;background:#fff;padding:10px;box-shadow:0 2px 6px rgba(0,0,0,0.06);flex-wrap:wrap}
+nav a{color:var(--accent);text-decoration:none;font-weight:600}
+.container{max-width:1000px;margin:18px auto;padding:12px}
+.controls{display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;font-size:1rem;cursor:pointer}
+.btn-ghost{background:#eef6fb;color:var(--accent);border:1px solid rgba(11,145,181,0.12);padding:10px 12px;border-radius:10px}
+.pager{text-align:center;margin-top:10px;font-weight:600}
+
+/* tampil atas–bawah */
+.game-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+
+.card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,36,0.04)}
+.drag-list{display:flex;flex-direction:column;gap:10px;overflow:auto;padding-right:6px}
+.drag-item{background:#e6f7fb;padding:10px;border-radius:10px;cursor:grab;border:1px solid #d1f0fa;font-size:1rem}
+.drag-item[draggable="true"]{touch-action:none}
+
+/* Gambar semua dalam satu baris tanpa scroll */
+.droplist{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:nowrap;
+  gap:10px;
+}
+.drop-target{
+  flex:1;
+  border:2px dashed #dbeefd;
+  border-radius:10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:#fbfeff;
+  padding:8px;
+  min-height:140px;
+  position:relative;
+  transition:0.2s;
+}
+.drop-target.hover{background:#e8f8ff;border-color:var(--accent)}
+.drop-target img{width:100%;height:100px;object-fit:cover;border-radius:8px}
+.match-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.result{margin-top:12px;font-weight:700}
+
+/* biar rapi di layar kecil */
+@media(max-width:768px){
+  .droplist{flex-wrap:wrap}
+  .drop-target{flex:1 1 45%}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <h1>Exercise — Drag & Drop (20 items)</h1>
+  <p style="margin:6px 0 0 0">Dibagi 4 set — tiap set 5 soal. Drag kalimat ke gambar yang sesuai.</p>
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="lesson.html">Lesson</a>
+  <a href="vocabulary.html">Vocabulary</a>
+  <a href="quiz.html">Quiz</a>
+</nav>
+
+<div class="container">
+  <div class="controls">
+    <button class="btn" id="shuffleBtn">Shuffle (acak semua)</button>
+    <button class="btn" id="startBtn">Start Game</button>
+    <button class="btn-ghost" id="resetBtn">Reset</button>
+  </div>
+
+  <div id="gameArea" style="display:none">
+    <div class="card game-grid">
+      <div id="leftCol" class="card">
+        <h3>Sentences</h3>
+        <div id="dragList" class="drag-list"></div>
+      </div>
+      <div id="rightCol" class="card">
+        <h3>Pictures</h3>
+        <div id="dropList" class="droplist"></div>
+      </div>
+    </div>
+
+    <div class="match-row" style="margin-top:12px">
+      <button class="btn" id="checkBtn">Check Answers</button>
+      <button class="btn" id="nextBtn">Next</button>
+      <button class="btn-ghost" id="playAgain" style="display:none">Play Again</button>
+    </div>
+
+    <div class="pager" id="pager"></div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+const ITEMS=[{"id":1,"sentence":"Made was at the beach yesterday.","img":"beach.jpg","label":"Beach"},{"id":2,"sentence":"Bu Niluh was in the kitchen last night.","img":"kitchen.jpg","label":"Kitchen"},{"id":3,"sentence":"They were in the market on Sunday.","img":"market.jpg","label":"Market"},{"id":4,"sentence":"We were in the swimming pool yesterday.","img":"pool.jpg","label":"Swimming Pool"},{"id":5,"sentence":"I was in Tanah Lot Temple last weekend.","img":"temple.jpg","label":"Tanah Lot Temple"},{"id":6,"sentence":"My family was at the hotel yesterday.","img":"hotel.jpg","label":"Hotel"},{"id":7,"sentence":"He was in the restaurant last night.","img":"restaurant.jpg","label":"Restaurant"},{"id":8,"sentence":"We were in the art market last Monday.","img":"artmarket.jpg","label":"Art Market"},{"id":9,"sentence":"She was in the park yesterday afternoon.","img":"park.jpg","label":"Park"},{"id":10,"sentence":"They were in the classroom this morning.","img":"classroom.jpg","label":"Classroom"},{"id":11,"sentence":"My father was in the office yesterday.","img":"office.jpg","label":"Office"},{"id":12,"sentence":"My mother was in the garden last evening.","img":"garden.jpg","label":"Garden"},{"id":13,"sentence":"We were in the playground yesterday.","img":"playground.jpg","label":"Playground"},{"id":14,"sentence":"The tourists were in the traditional market.","img":"tradmarket.jpg","label":"Traditional Market"},{"id":15,"sentence":"I was in the bus station yesterday morning.","img":"busstation.jpg","label":"Bus Station"},{"id":16,"sentence":"We were in the airport last Sunday.","img":"airport.jpg","label":"Airport"},{"id":17,"sentence":"My little brother was in the bedroom last night.","img":"bedroom.jpg","label":"Bedroom"},{"id":18,"sentence":"They were in the living room yesterday.","img":"livingroom.jpg","label":"Living Room"},{"id":19,"sentence":"She was in the library yesterday.","img":"library.jpg","label":"Library"},{"id":20,"sentence":"We were in the rice field last weekend.","img":"ricefield.jpg","label":"Rice Field"}];
+
+let pool=[],page=0;const PAGE_SIZE=5;let totalScore=0;let dragged=null;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function renderPage(){
+  const start=page*PAGE_SIZE,slice=pool.slice(start,start+PAGE_SIZE);
+  const dragList=document.getElementById('dragList'),dropList=document.getElementById('dropList');
+  dragList.innerHTML='';dropList.innerHTML='';
+  const drags=shuffle(slice.map(it=>({id:it.id,sentence:it.sentence})));
+  drags.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='drag-item';el.draggable=true;el.dataset.id=d.id;el.textContent=d.sentence;
+    el.addEventListener('dragstart',()=>{dragged=el;setTimeout(()=>el.style.opacity=0.5,0);});
+    el.addEventListener('dragend',()=>{setTimeout(()=>el.style.opacity=1,0);dragged=null;});
+    el.addEventListener('touchstart',()=>{dragged=el;el.style.opacity=0.6;},{passive:false});
+    el.addEventListener('touchend',()=>{el.style.opacity=1;},{passive:false});
+    dragList.appendChild(el);
+  });
+  const drops=shuffle(slice.map(it=>({id:it.id,img:it.img,label:it.label})));
+  drops.forEach(d=>{
+    const t=document.createElement('div');t.className='drop-target';t.dataset.id=d.id;
+    const img=document.createElement('img');img.src='img/'+d.img;img.alt=d.label;
+    const cap=document.createElement('div');cap.style.marginTop='8px';cap.textContent=d.label;
+    t.appendChild(img);t.appendChild(cap);
+    t.addEventListener('dragover',ev=>ev.preventDefault());
+    t.addEventListener('dragenter',()=>t.classList.add('hover'));
+    t.addEventListener('dragleave',()=>t.classList.remove('hover'));
+    t.addEventListener('drop',ev=>{ev.preventDefault();t.classList.remove('hover');if(dragged){t.innerHTML='';t.appendChild(dragged);}});
+    dropList.appendChild(t);
+  });
+  document.getElementById('pager').innerText='Set '+(page+1)+' of '+Math.ceil(pool.length/PAGE_SIZE);
+  document.getElementById('result').innerText='';
+}
+document.addEventListener('touchend',function(e){
+  if(!dragged)return;const touch=e.changedTouches[0];
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const target=el&&el.closest&&el.closest('.drop-target');
+  if(target){target.innerHTML='';target.appendChild(dragged);}
+  dragged.style.opacity=1;dragged=null;
+},{passive:false});
+document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('shuffleBtn').addEventListener('click',()=>{pool=shuffle(ITEMS.slice());page=0;alert('Items shuffled. Click Start Game to begin.');});
+  document.getElementById('startBtn').addEventListener('click',()=>{if(pool.length===0)pool=shuffle(ITEMS.slice());page=0;totalScore=0;document.getElementById('gameArea').style.display='block';renderPage();});
+  document.getElementById('resetBtn').addEventListener('click',()=>{pool=[];page=0;totalScore=0;document.getElementById('gameArea').style.display='none';document.getElementById('result').innerText='Game reset.';});
+  document.getElementById('checkBtn').addEventListener('click',()=>{
+    const targets=document.querySelectorAll('.drop-target');let correct=0;
+    targets.forEach(t=>{const child=t.querySelector('.drag-item');
+      if(child&&Number(child.dataset.id)===Number(t.dataset.id)){t.style.borderColor='#16a34a';t.style.background='#dcfce7';correct++;}
+      else{t.style.borderColor='#ef4444';t.style.background='#fee2e2';}});
+    document.getElementById('result').innerText='Correct in this set: '+correct+' / '+targets.length;
+  });
+  document.getElementById('nextBtn').addEventListener('click',()=>{
+    const targets=document.querySelectorAll('.drop-target');let correct=0;
+    targets.forEach(t=>{const child=t.querySelector('.drag-item');
+      if(child&&Number(child.dataset.id)===Number(t.dataset.id))correct++;});
+    totalScore+=correct;
+    if((page+1)*PAGE_SIZE>=pool.length){
+      document.getElementById('result').innerText='Finished! Total correct: '+totalScore+' / '+pool.length;
+      document.getElementById('playAgain').style.display='inline-block';
+      document.getElementById('checkBtn').disabled=true;document.getElementById('nextBtn').disabled=true;return;
+    }
+    page++;renderPage();
+  });
+  document.getElementById('playAgain').addEventListener('click',()=>{
+    pool=shuffle(ITEMS.slice());page=0;totalScore=0;renderPage();
+    document.getElementById('playAgain').style.display='none';
+    document.getElementById('checkBtn').disabled=false;document.getElementById('nextBtn').disabled=false;
+  });
+  pool=shuffle(ITEMS.slice());
+});
+</script>
+</body>
+</html>

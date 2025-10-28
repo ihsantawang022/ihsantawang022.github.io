@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Report & Reflection</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header"><h1>Report & Reflection</h1><p class="small">Save student answers, reflections, and print the report</p></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="lesson.html">Lesson</a>
+    <a href="exercise.html">Exercise</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="report.html">Report</a>
+  </nav>
+  <div class="container">
+    <div class="card">
+      <h2>Student report form</h2>
+      <form id="report-form" onsubmit="saveReport(event)">
+        <label>Nama: <input name="name" required></label><br><br>
+        <label>Answer (contoh jawaban): <input name="answer" required></label><br><br>
+        <label>What did you learn today? <input id="what-learned" name="learned"></label><br><br>
+        <button class="btn">Save Report</button>
+      </form>
+      <div style="margin-top:8px">
+        <button class="btn-ghost" onclick="downloadReports()">Download JSON</button>
+        <button class="btn" onclick="printReports()">Print / Save as PDF</button>
+      </div>
+    </div>
+
+    <div id="reports-list"></div>
+
+    <div class="card">
+      <h2>Reflection</h2>
+      <textarea id="reflection" rows="4" style="width:100%"></textarea>
+      <div style="margin-top:8px">
+        <button class="btn" onclick="saveReflection()">Save Reflection</button>
+        <span id="ref-msg" class="small" style="margin-left:8px"></span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Reports are stored in your browser (localStorage).</div>
+  <script src="script.js"></script>
+</body>
+</html>
