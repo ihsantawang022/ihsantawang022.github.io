@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarik Tambang Kemerdekaan</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
+    .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px; }
+    .question { font-size: 1.2em; margin: 20px 0; }
+    .btn { padding: 10px 20px; margin: 10px; font-size: 1em; cursor: pointer; }
+    .rope { font-size: 2em; margin: 30px 0; white-space: nowrap; overflow-x: auto; }
+    .winner { font-size: 1.5em; color: green; margin-top: 20px; }
+    .choices button { display: block; margin: 5px auto; width: 80%; }
+    .turn { font-weight: bold; margin-bottom: 10px; }
+    .stats { margin-top: 20px; font-size: 1em; color: #333; }
+
+    @media (max-width: 600px) {
+      .btn { font-size: 1.2em; padding: 15px; }
+      .question { font-size: 1.1em; }
+      .rope { font-size: 1.5em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Tarik Tambang Kemerdekaan 🎉</h1>
+    <div class="rope" id="ropeDisplay">🧑‍🤝‍🧑=====🏁=====🧑‍🤝‍🧑</div>
+    <div class="turn" id="turnInfo">Giliran: Tim A</div>
+    <div class="question" id="question">Klik "Mulai" untuk bermain!</div>
+    <div class="choices" id="choices"></div>
+    <button class="btn" onclick="startGame()">Mulai</button>
+    <button class="btn" onclick="restartGame()">Main Lagi</button>
+    <div class="winner" id="winner"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Kapan Indonesia memproklamasikan kemerdekaannya?", options: ["1 Juni 1945", "17 Agustus 1945", "10 November 1945", "27 Desember 1949"], answer: 1 },
+      { q: "Siapa yang membacakan teks Proklamasi Kemerdekaan Indonesia?", options: ["Drs. Mohammad Hatta", "Sutan Sjahrir", "Ir. Soekarno", "Jenderal Sudirman"], answer: 2 },
+      { q: "Siapa yang mendampingi Ir. Soekarno saat membacakan Proklamasi?", options: ["Jenderal Sudirman", "Drs. Mohammad Hatta", "Ki Hajar Dewantara", "Tan Malaka"], answer: 1 },
+      { q: "Di mana teks Proklamasi dibacakan?", options: ["Istana Merdeka", "Gedung Agung", "Jalan Pegangsaan Timur No. 56", "Lapangan Ikada"], answer: 2 },
+      { q: "Apa nama naskah hukum pertama setelah Indonesia merdeka?", options: ["Piagam Jakarta", "Undang-Undang Dasar 1945", "Deklarasi Kemerdekaan", "Konstitusi RIS"], answer: 1 },
+  
+  { q: "Apa nama kelompok pemuda yang mendesak Soekarno-Hatta untuk segera memproklamasikan kemerdekaan?", options: ["PETA", "BPUPKI", "PPKI", "Golongan Muda"], answer: 3 },
+{ q: "Apa nama dokumen yang menjadi dasar pembentukan UUD 1945?", options: ["Piagam Jakarta", "Dekrit Presiden", "Maklumat Pemerintah", "Konstitusi RIS"], answer: 0 },
+{ q: "Apa nama badan yang dibentuk Jepang untuk mempersiapkan kemerdekaan Indonesia?", options: ["KNIP", "BPUPKI", "PPKI", "BKR"], answer: 1 },
+{ q: "Apa arti lambang bintang pada Pancasila?", options: ["Keadilan sosial", "Persatuan", "Ketuhanan", "Kemanusiaan"], answer: 2 },
+{ q: "Siapa yang mengetik naskah Proklamasi?", options: ["Sayuti Melik", "Sukarni", "Latief Hendraningrat", "Ahmad Subardjo"], answer: 0 },
+{ q: "Apa nama lagu yang dinyanyikan saat pengibaran bendera pertama kali?", options: ["Indonesia Raya", "Bagimu Negeri", "Tanah Airku", "Hari Merdeka"], answer: 0 },
+{ q: "Apa nama organisasi militer pertama setelah kemerdekaan?", options: ["TNI", "BKR", "PETA", "KNIL"], answer: 1 },
+{ q: "Apa isi sila kedua Pancasila?", options: ["Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Ketuhanan Yang Maha Esa", "Keadilan sosial bagi seluruh rakyat Indonesia"], answer: 0 },
+{ q: "Apa tujuan utama Proklamasi Kemerdekaan?", options: ["Mendapat pengakuan dunia", "Mengakhiri penjajahan", "Membentuk negara baru", "Menyatukan bangsa"], answer: 1 },
+{ q: "Siapa yang mengibarkan bendera Merah Putih pertama kali?", options: ["Sukarni dan Sayuti Melik", "Fatmawati dan Hatta", "Latief Hendraningrat dan Suhud", "Soekarno dan Hatta"], answer: 2 },
+  
+      { q: "Apa makna dari kata 'merdeka'?", options: ["Bebas dari penjajahan", "Bebas bicara", "Bebas memilih presiden", "Bebas beragama"], answer: 0 },
+      { q: "Sebutkan dua tokoh yang ikut menyusun teks Proklamasi!", options: ["Soekarno dan Hatta", "Sjahrir dan Sudirman", "Tan Malaka dan Hatta", "Soekarno dan Kartini"], answer: 0 },
+      { q: "Apa nama lagu kebangsaan Indonesia?", options: ["Indonesia Merdeka", "Tanah Airku", "Indonesia Raya", "Bagimu Negeri"], answer: 2 },
+      { q: "Apa warna bendera Indonesia dan maknanya?", options: ["Merah Putih: keberanian dan kesucian", "Hijau Putih: harapan dan kesucian", "Merah Kuning: keberanian dan kemakmuran", "Putih Biru: kesucian dan kedamaian"], answer: 0 },
+      { q: "Peristiwa penting setelah Proklamasi yang menunjukkan perjuangan?", options: ["Konferensi Meja Bundar", "Pertempuran Surabaya", "Agresi Militer Belanda II", "Deklarasi Djuanda"], answer: 1 }
+
+    ];
+
+    let index = 0;
+    let position = 0;
+    let currentTeam = "A";
+    let scoreA = 0;
+    let scoreB = 0;
+
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const ropeEl = document.getElementById("ropeDisplay");
+    const winnerEl = document.getElementById("winner");
+    const turnInfoEl = document.getElementById("turnInfo");
+    const statsEl = document.getElementById("stats");
+
+    function startGame() {
+      index = 0;
+      position = 0;
+      currentTeam = "A";
+      scoreA = 0;
+      scoreB = 0;
+      winnerEl.textContent = "";
+      statsEl.textContent = "";
+      shuffleQuestions();
+      updateRope();
+      showQuestion();
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    function shuffleQuestions() {
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+    }
+
+    function showQuestion() {
+      if (index >= questions.length || Math.abs(position) >= 5) {
+        questionEl.textContent = "Permainan selesai!";
+        choicesEl.innerHTML = "";
+        showStats();
+        return;
+      }
+      const q = questions[index];
+      questionEl.textContent = q.q;
+      turnInfoEl.textContent = `Giliran: Tim ${currentTeam}`;
+      choicesEl.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(i);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[index].answer;
+      if (currentTeam === "A") {
+        if (selected === correct) {
+          position++;
+          scoreA++;
+        } else {
+          position--;
+          scoreB++;
+        }
+      } else {
+        if (selected === correct) {
+          position--;
+          scoreB++;
+        } else {
+          position++;
+          scoreA++;
+        }
+      }
+      index++;
+      currentTeam = currentTeam === "A" ? "B" : "A";
+      updateRope();
+      showQuestion();
+    }
+
+    function updateRope() {
+  const left = "🧑‍🤝‍🧑";
+  const right = "🧑‍🤝‍🧑";
+  const ropeLength = 10;
+  const offset = Math.max(-5, Math.min(5, position));
+  const leftRope = "═".repeat(ropeLength - offset);
+  const rightRope = "═".repeat(ropeLength + offset);
+  ropeEl.textContent = `${left}${leftRope}🏁${rightRope}${right}`;
+
+  if (position >= 5) {
+    winnerEl.textContent = "🎉 Tim A Menang!";
+    showPopup("🎉 Selamat Tim A! Kalian menang!");
+  }
+  if (position <= -5) {
+    winnerEl.textContent = "🎉 Tim B Menang!";
+    showPopup("🎉 Selamat Tim B! Kalian menang!");
+  }
+}
+
+  function showPopup(message) {
+  setTimeout(() => {
+    alert(message);
+  }, 300); // jeda sedikit agar rope update dulu
+}
+  
+  
+    function showStats() {
+  let resultText = "";
+  if (scoreA > scoreB) {
+    resultText = "🎉 Tim A Menang berdasarkan skor akhir!";
+  } else if (scoreB > scoreA) {
+    resultText = "🎉 Tim B Menang berdasarkan skor akhir!";
+  } else {
+    resultText = "🤝 Permainan berakhir seri!";
+  }
+
+  winnerEl.textContent = resultText;
+
+  statsEl.innerHTML = `
+    <p>📊 Statistik Akhir:</p>
+    <p>Tim A: ${scoreA} Poin</p>
+    <p>Tim B: ${scoreB} Poin</p>
+    <p>Total Pertanyaan: ${index}</p>
+  `;
+}
+  </script>
+</body>
+</html>
