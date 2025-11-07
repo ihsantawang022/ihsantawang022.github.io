@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4A90E2, #34495E);
+            color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 30px 20px;
+            width: 300px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .box h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #FFD700;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-button {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #333;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Selamat Datang di </br> Situs Media & Games Pembelajaran</h1>
+
+    <div class="container">
+        <!-- Kotak 1 -->
+        <div class="box">
+            <div class="button-container">
+                <a href="page1.html" class="nav-button">Halaman 1</a>
+                <a href="page2.html" class="nav-button">Halaman 2</a>
+                <a href="page3.html" class="nav-button">Halaman 3</a>
+                <a href="page4.html" class="nav-button">Halaman 4</a>
+                <a href="page5.html" class="nav-button">Halaman 5</a>
+            </div>
+        </div>
+
+        <!-- Kotak 2 -->
+        <div class="box">
+            <div class="button-container">
+                <a href="page6.html" class="nav-button">Halaman 6</a>
+                <a href="page7.html" class="nav-button">Halaman 7</a>
+                <a href="page8.html" class="nav-button">Halaman 8</a>
+                <a href="page9.html" class="nav-button">Halaman 9</a>
+                <a href="page10.html" class="nav-button">Halaman 10</a>
+            </div>
+        </div>
+    </div>
+	<h3>Copyright | Ihsan Syah - SDN Kakatua</h3>
+</body>
+</html>
