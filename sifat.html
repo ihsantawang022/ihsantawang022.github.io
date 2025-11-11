@@ -30,6 +30,7 @@
     min-height: 45px;
     font-size: 0.85em;
     transition: all 0.3s ease;
+    user-select: none;
   }
   .situation {
     border: 1.5px dashed #888;
@@ -44,9 +45,7 @@
   }
   .feeling {
     cursor: grab;
-  }
-  .dragging {
-    opacity: 0.5;
+    touch-action: none;
   }
   #resetBtn {
     margin-top: 15px;
@@ -61,7 +60,7 @@
   #resetBtn:hover {
     background: #0056b3;
   }
-  /* Popup styling */
+  /* Popup */
   #popup {
     display: none;
     position: fixed;
@@ -94,7 +93,7 @@
 <body>
 
 <h1>🎯 Match the Situation with the Feeling</h1>
-<p>Drag the correct <b>feeling word</b> to each situation!</p>
+<p>Drag or touch the correct <b>feeling word</b> to each situation!</p>
 
 <div class="container" id="situations"></div>
 
@@ -103,7 +102,6 @@
 
 <button id="resetBtn">🔄 Reset Game</button>
 
-<!-- Popup for score -->
 <div id="popup">
   <h2>🎉 Your Score</h2>
   <p id="scoreText"></p>
@@ -157,21 +155,20 @@ function createGame() {
     document.getElementById("feelings").appendChild(div);
   });
 
-  addDragEvents();
+  addDragAndTouchEvents();
 }
 
-function addDragEvents() {
+function addDragAndTouchEvents() {
   const feelings = document.querySelectorAll('.feeling');
   const situations = document.querySelectorAll('.situation');
 
+  // --- Mouse/PC Drag ---
   feelings.forEach(feeling => {
     feeling.addEventListener('dragstart', e => {
       e.dataTransfer.setData('text', feeling.dataset.feeling);
       feeling.classList.add('dragging');
     });
-    feeling.addEventListener('dragend', () => {
-      feeling.classList.remove('dragging');
-    });
+    feeling.addEventListener('dragend', () => feeling.classList.remove('dragging'));
   });
 
   situations.forEach(situation => {
@@ -179,19 +176,59 @@ function addDragEvents() {
     situation.addEventListener('drop', e => {
       e.preventDefault();
       const feelingWord = e.dataTransfer.getData('text');
-      if (!situation.classList.contains('correct')) {
-        if (feelingWord === situation.dataset.answer) {
-          situation.classList.add('correct');
-          situation.textContent += " ✅ (" + feelingWord + ")";
-          totalCorrect++;
-          if (totalCorrect === data.length) showPopup();
-        } else {
-          situation.classList.add('wrong');
-          setTimeout(() => situation.classList.remove('wrong'), 800);
-        }
-      }
+      checkAnswer(situation, feelingWord);
     });
   });
+
+  // --- Touch/Smartboard Drag ---
+  feelings.forEach(feeling => {
+    let clone = null;
+    feeling.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      clone = feeling.cloneNode(true);
+      clone.style.position = "fixed";
+      clone.style.left = touch.clientX - 50 + "px";
+      clone.style.top = touch.clientY - 25 + "px";
+      clone.style.opacity = "0.7";
+      clone.style.pointerEvents = "none";
+      clone.style.zIndex = 1000;
+      document.body.appendChild(clone);
+    });
+
+    feeling.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      if (clone) {
+        clone.style.left = touch.clientX - 50 + "px";
+        clone.style.top = touch.clientY - 25 + "px";
+      }
+    });
+
+    feeling.addEventListener('touchend', e => {
+      if (!clone) return;
+      const touch = e.changedTouches[0];
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (elem && elem.classList.contains("situation")) {
+        const feelingWord = feeling.dataset.feeling;
+        checkAnswer(elem, feelingWord);
+      }
+      clone.remove();
+      clone = null;
+    });
+  });
+}
+
+function checkAnswer(situation, feelingWord) {
+  if (!situation.classList.contains('correct')) {
+    if (feelingWord === situation.dataset.answer) {
+      situation.classList.add('correct');
+      situation.textContent += " ✅ (" + feelingWord + ")";
+      totalCorrect++;
+      if (totalCorrect === data.length) showPopup();
+    } else {
+      situation.classList.add('wrong');
+      setTimeout(() => situation.classList.remove('wrong'), 800);
+    }
+  }
 }
 
 function showPopup() {
@@ -208,7 +245,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   createGame();
 });
 
-// Start first time
 createGame();
 </script>
 </body>
