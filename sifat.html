@@ -1,142 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Match the Feeling Game</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #333;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .situation, .feeling {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      width: 260px;
-      min-height: 60px;
-      transition: all 0.3s ease;
-    }
-    .situation {
-      border: 2px dashed #888;
-    }
-    .situation.correct {
-      background: #d4edda;
-      border-color: #28a745;
-    }
-    .situation.wrong {
-      background: #f8d7da;
-      border-color: #dc3545;
-    }
-    .feeling {
-      cursor: grab;
-    }
-    .dragging {
-      opacity: 0.5;
-    }
-    #resetBtn {
-      margin-top: 30px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    #resetBtn:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match the Feeling Game</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+  }
+  h1 { color: #333; font-size: 1.3em; }
+  p { font-size: 0.9em; margin-bottom: 10px; }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .situation, .feeling {
+    background: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: 180px;
+    min-height: 45px;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+  }
+  .situation {
+    border: 1.5px dashed #888;
+  }
+  .situation.correct {
+    background: #d4edda;
+    border-color: #28a745;
+  }
+  .situation.wrong {
+    background: #f8d7da;
+    border-color: #dc3545;
+  }
+  .feeling {
+    cursor: grab;
+  }
+  .dragging {
+    opacity: 0.5;
+  }
+  #resetBtn {
+    margin-top: 15px;
+    padding: 6px 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  #resetBtn:hover {
+    background: #0056b3;
+  }
+  /* Popup styling */
+  #popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 999;
+  }
+  #popup h2 {
+    margin-bottom: 10px;
+  }
+  #popup button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  @media (max-width: 600px) {
+    .situation, .feeling { width: 90%; font-size: 0.9em; }
+  }
+</style>
 </head>
 <body>
 
-  <h1>🎯 Match the Situation with the Feeling</h1>
-  <p>Drag the correct <b>feeling word</b> to each situation below!</p>
+<h1>🎯 Match the Situation with the Feeling</h1>
+<p>Drag the correct <b>feeling word</b> to each situation!</p>
 
-  <div class="container" id="situations">
-    <div class="situation" data-answer="happy">1️⃣ I got a new toy today!</div>
-    <div class="situation" data-answer="sad">2️⃣ My friend didn’t play with me.</div>
-    <div class="situation" data-answer="thirsty">3️⃣ I played football for a long time.</div>
-    <div class="situation" data-answer="angry">4️⃣ My little brother broke my pencil.</div>
-    <div class="situation" data-answer="alone">5️⃣ Nobody is home with me now.</div>
-    <div class="situation" data-answer="cold">6️⃣ I forgot my jacket and it’s raining.</div>
-    <div class="situation" data-answer="hungry">7️⃣ I didn’t eat breakfast this morning.</div>
-    <div class="situation" data-answer="worried">8️⃣ My cat hasn’t come home yet.</div>
-    <div class="situation" data-answer="sleepy">9️⃣ It’s late at night and I can’t keep my eyes open.</div>
-    <div class="situation" data-answer="confused">🔟 I don’t understand the math question.</div>
-    <div class="situation" data-answer="curious">11️⃣ I want to know what’s inside the big box.</div>
-    <div class="situation" data-answer="tired">12️⃣ I helped my mom clean the house all day.</div>
-  </div>
+<div class="container" id="situations"></div>
 
-  <h2>Feeling Words</h2>
-  <div class="container" id="feelings">
-    <div class="feeling" draggable="true" data-feeling="happy">😊 happy</div>
-    <div class="feeling" draggable="true" data-feeling="sad">😢 sad</div>
-    <div class="feeling" draggable="true" data-feeling="thirsty">🥤 thirsty</div>
-    <div class="feeling" draggable="true" data-feeling="angry">😡 angry</div>
-    <div class="feeling" draggable="true" data-feeling="alone">😔 alone</div>
-    <div class="feeling" draggable="true" data-feeling="cold">🥶 cold</div>
-    <div class="feeling" draggable="true" data-feeling="hungry">🍽️ hungry</div>
-    <div class="feeling" draggable="true" data-feeling="worried">😟 worried</div>
-    <div class="feeling" draggable="true" data-feeling="sleepy">😴 sleepy</div>
-    <div class="feeling" draggable="true" data-feeling="confused">🤔 confused</div>
-    <div class="feeling" draggable="true" data-feeling="curious">🧐 curious</div>
-    <div class="feeling" draggable="true" data-feeling="tired">😫 tired</div>
-  </div>
+<h2 style="font-size:1.1em;margin-top:20px;">Feeling Words</h2>
+<div class="container" id="feelings"></div>
 
-  <button id="resetBtn">🔄 Reset Game</button>
+<button id="resetBtn">🔄 Reset Game</button>
 
-  <script>
-    const feelings = document.querySelectorAll('.feeling');
-    const situations = document.querySelectorAll('.situation');
+<!-- Popup for score -->
+<div id="popup">
+  <h2>🎉 Your Score</h2>
+  <p id="scoreText"></p>
+  <button onclick="closePopup()">OK</button>
+</div>
 
-    feelings.forEach(feeling => {
-      feeling.addEventListener('dragstart', e => {
-        e.dataTransfer.setData('text', feeling.dataset.feeling);
-        feeling.classList.add('dragging');
-      });
-      feeling.addEventListener('dragend', () => {
-        feeling.classList.remove('dragging');
-      });
+<script>
+const data = [
+  {sentence: "I got a new toy today!", feeling: "happy", icon:"😊"},
+  {sentence: "My friend didn’t play with me.", feeling: "sad", icon:"😢"},
+  {sentence: "I played football for a long time.", feeling: "thirsty", icon:"🥤"},
+  {sentence: "My little brother broke my pencil.", feeling: "angry", icon:"😡"},
+  {sentence: "Nobody is home with me now.", feeling: "alone", icon:"😔"},
+  {sentence: "I forgot my jacket and it’s raining.", feeling: "cold", icon:"🥶"},
+  {sentence: "I didn’t eat breakfast this morning.", feeling: "hungry", icon:"🍽️"},
+  {sentence: "My cat hasn’t come home yet.", feeling: "worried", icon:"😟"},
+  {sentence: "It’s late at night and I can’t keep my eyes open.", feeling: "sleepy", icon:"😴"},
+  {sentence: "I don’t understand the math question.", feeling: "confused", icon:"🤔"},
+  {sentence: "I want to know what’s inside the big box.", feeling: "curious", icon:"🧐"},
+  {sentence: "I helped my mom clean the house all day.", feeling: "tired", icon:"😫"}
+];
+
+let totalCorrect = 0;
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function createGame() {
+  totalCorrect = 0;
+  document.getElementById("situations").innerHTML = "";
+  document.getElementById("feelings").innerHTML = "";
+
+  const shuffledSituations = shuffle([...data]);
+  const shuffledFeelings = shuffle([...data]);
+
+  shuffledSituations.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.classList.add("situation");
+    div.dataset.answer = item.feeling;
+    div.textContent = `${index+1}. ${item.sentence}`;
+    document.getElementById("situations").appendChild(div);
+  });
+
+  shuffledFeelings.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("feeling");
+    div.draggable = true;
+    div.dataset.feeling = item.feeling;
+    div.textContent = `${item.icon} ${item.feeling}`;
+    document.getElementById("feelings").appendChild(div);
+  });
+
+  addDragEvents();
+}
+
+function addDragEvents() {
+  const feelings = document.querySelectorAll('.feeling');
+  const situations = document.querySelectorAll('.situation');
+
+  feelings.forEach(feeling => {
+    feeling.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text', feeling.dataset.feeling);
+      feeling.classList.add('dragging');
     });
+    feeling.addEventListener('dragend', () => {
+      feeling.classList.remove('dragging');
+    });
+  });
 
-    situations.forEach(situation => {
-      situation.addEventListener('dragover', e => e.preventDefault());
-      situation.addEventListener('drop', e => {
-        e.preventDefault();
-        const feelingWord = e.dataTransfer.getData('text');
+  situations.forEach(situation => {
+    situation.addEventListener('dragover', e => e.preventDefault());
+    situation.addEventListener('drop', e => {
+      e.preventDefault();
+      const feelingWord = e.dataTransfer.getData('text');
+      if (!situation.classList.contains('correct')) {
         if (feelingWord === situation.dataset.answer) {
           situation.classList.add('correct');
           situation.textContent += " ✅ (" + feelingWord + ")";
+          totalCorrect++;
+          if (totalCorrect === data.length) showPopup();
         } else {
           situation.classList.add('wrong');
           setTimeout(() => situation.classList.remove('wrong'), 800);
         }
-      });
+      }
     });
+  });
+}
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      situations.forEach(s => {
-        s.classList.remove('correct', 'wrong');
-        s.textContent = s.textContent.split('✅')[0].trim();
-      });
-    });
-  </script>
+function showPopup() {
+  document.getElementById("popup").style.display = "block";
+  document.getElementById("scoreText").textContent = `You got ${totalCorrect} out of ${data.length} correct!`;
+}
 
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  closePopup();
+  createGame();
+});
+
+// Start first time
+createGame();
+</script>
 </body>
 </html>
