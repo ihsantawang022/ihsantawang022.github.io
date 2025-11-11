@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match the Feeling Game</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+  }
+  h1 { color: #333; font-size: 1.3em; }
+  p { font-size: 0.9em; margin-bottom: 10px; }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .situation, .feeling {
+    background: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: 180px;
+    min-height: 45px;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  .situation {
+    border: 1.5px dashed #888;
+  }
+  .situation.correct {
+    background: #d4edda;
+    border-color: #28a745;
+  }
+  .situation.wrong {
+    background: #f8d7da;
+    border-color: #dc3545;
+  }
+  .feeling {
+    cursor: grab;
+    touch-action: none;
+  }
+  #resetBtn {
+    margin-top: 15px;
+    padding: 6px 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+  }
+  #resetBtn:hover {
+    background: #0056b3;
+  }
+  /* Popup */
+  #popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 999;
+  }
+  #popup h2 {
+    margin-bottom: 10px;
+  }
+  #popup button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  @media (max-width: 600px) {
+    .situation, .feeling { width: 90%; font-size: 0.9em; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🎯 Match the Situation with the Feeling</h1>
+<p>Drag or touch the correct <b>feeling word</b> to each situation!</p>
+
+<div class="container" id="situations"></div>
+
+<h2 style="font-size:1.1em;margin-top:20px;">Feeling Words</h2>
+<div class="container" id="feelings"></div>
+
+<button id="resetBtn">🔄 Reset Game</button>
+
+<div id="popup">
+  <h2>🎉 Your Score</h2>
+  <p id="scoreText"></p>
+  <button onclick="closePopup()">OK</button>
+</div>
+
+<script>
+const data = [
+  {sentence: "I got a new toy today!", feeling: "happy", icon:"😊"},
+  {sentence: "My friend didn’t play with me.", feeling: "sad", icon:"😢"},
+  {sentence: "I played football for a long time.", feeling: "thirsty", icon:"🥤"},
+  {sentence: "My little brother broke my pencil.", feeling: "angry", icon:"😡"},
+  {sentence: "Nobody is home with me now.", feeling: "alone", icon:"😔"},
+  {sentence: "I forgot my jacket and it’s raining.", feeling: "cold", icon:"🥶"},
+  {sentence: "I didn’t eat breakfast this morning.", feeling: "hungry", icon:"🍽️"},
+  {sentence: "My cat hasn’t come home yet.", feeling: "worried", icon:"😟"},
+  {sentence: "It’s late at night and I can’t keep my eyes open.", feeling: "sleepy", icon:"😴"},
+  {sentence: "I don’t understand the math question.", feeling: "confused", icon:"🤔"},
+  {sentence: "I want to know what’s inside the big box.", feeling: "curious", icon:"🧐"},
+  {sentence: "I helped my mom clean the house all day.", feeling: "tired", icon:"😫"},
+  {sentence: "I lost my pencil case.", feeling: "disappointed", icon:"😞"},
+  {sentence: "My team won the football game.", feeling: "excited", icon:"🤩"},
+  {sentence: "I saw a big spider in my room.", feeling: "scared", icon:"😨"},
+  {sentence: "I got a present from my best friend.", feeling: "grateful", icon:"🙏"},
+  {sentence: "My room is very noisy and messy.", feeling: "annoyed", icon:"😤"},
+  {sentence: "I helped my teacher clean the classroom.", feeling: "proud", icon:"😎"}
+];
+
+let totalCorrect = 0;
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function createGame() {
+  totalCorrect = 0;
+  document.getElementById("situations").innerHTML = "";
+  document.getElementById("feelings").innerHTML = "";
+
+  const shuffledSituations = shuffle([...data]);
+  const shuffledFeelings = shuffle([...data]);
+
+  shuffledSituations.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.classList.add("situation");
+    div.dataset.answer = item.feeling;
+    div.textContent = `${index+1}. ${item.sentence}`;
+    document.getElementById("situations").appendChild(div);
+  });
+
+  shuffledFeelings.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("feeling");
+    div.draggable = true;
+    div.dataset.feeling = item.feeling;
+    div.textContent = `${item.icon} ${item.feeling}`;
+    document.getElementById("feelings").appendChild(div);
+  });
+
+  addDragAndTouchEvents();
+}
+
+function addDragAndTouchEvents() {
+  const feelings = document.querySelectorAll('.feeling');
+  const situations = document.querySelectorAll('.situation');
+
+  // Mouse/PC Drag
+  feelings.forEach(feeling => {
+    feeling.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text', feeling.dataset.feeling);
+      feeling.classList.add('dragging');
+    });
+    feeling.addEventListener('dragend', () => feeling.classList.remove('dragging'));
+  });
+
+  situations.forEach(situation => {
+    situation.addEventListener('dragover', e => e.preventDefault());
+    situation.addEventListener('drop', e => {
+      e.preventDefault();
+      const feelingWord = e.dataTransfer.getData('text');
+      checkAnswer(situation, feelingWord);
+    });
+  });
+
+  // Touch/Smartboard Drag
+  feelings.forEach(feeling => {
+    let clone = null;
+    feeling.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      clone = feeling.cloneNode(true);
+      clone.style.position = "fixed";
+      clone.style.left = touch.clientX - 50 + "px";
+      clone.style.top = touch.clientY - 25 + "px";
+      clone.style.opacity = "0.7";
+      clone.style.pointerEvents = "none";
+      clone.style.zIndex = 1000;
+      document.body.appendChild(clone);
+    });
+
+    feeling.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      if (clone) {
+        clone.style.left = touch.clientX - 50 + "px";
+        clone.style.top = touch.clientY - 25 + "px";
+      }
+    });
+
+    feeling.addEventListener('touchend', e => {
+      if (!clone) return;
+      const touch = e.changedTouches[0];
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (elem && elem.classList.contains("situation")) {
+        const feelingWord = feeling.dataset.feeling;
+        checkAnswer(elem, feelingWord);
+      }
+      clone.remove();
+      clone = null;
+    });
+  });
+}
+
+function checkAnswer(situation, feelingWord) {
+  if (!situation.classList.contains('correct')) {
+    if (feelingWord === situation.dataset.answer) {
+      situation.classList.add('correct');
+      situation.textContent += " ✅ (" + feelingWord + ")";
+      totalCorrect++;
+      if (totalCorrect === data.length) showPopup();
+    } else {
+      situation.classList.add('wrong');
+      setTimeout(() => situation.classList.remove('wrong'), 800);
+    }
+  }
+}
+
+function showPopup() {
+  document.getElementById("popup").style.display = "block";
+  document.getElementById("scoreText").textContent = `You got ${totalCorrect} out of ${data.length} correct!`;
+}
+
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  closePopup();
+  createGame();
+});
+
+createGame();
+</script>
+</body>
+</html>
