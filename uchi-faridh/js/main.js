@@ -89,7 +89,11 @@ function GetURLParameter(sParam) {
   }
 }
 var to = GetURLParameter("to");
-document.getElementById("nama").innerHTML = to ? decodeURI(to) : "Tamu Spesial";
+if (to) {
+  to = decodeURIComponent(to.replace(/\+/g, " "));
+}
+document.getElementById("nama").innerHTML = to ? to : "Tamu Spesial";
+
 
 // hover blur effect
 $('.blur').mouseenter(function(){
