@@ -11,7 +11,6 @@
     margin: 0;
     padding: 10px;
     text-align: center;
-    overflow-x: hidden;
   }
   h1 { color: #333; font-size: 1.3em; }
   p { font-size: 0.9em; margin-bottom: 10px; }
@@ -26,11 +25,11 @@
     background: #fff;
     padding: 8px;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     width: 180px;
     min-height: 45px;
     font-size: 0.85em;
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
     user-select: none;
   }
   .situation {
@@ -39,29 +38,14 @@
   .situation.correct {
     background: #d4edda;
     border-color: #28a745;
-    transform: scale(1.05);
   }
   .situation.wrong {
     background: #f8d7da;
     border-color: #dc3545;
-    animation: shake 0.3s;
-  }
-  @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-    75% { transform: translateX(-4px); }
-    100% { transform: translateX(0); }
   }
   .feeling {
     cursor: grab;
     touch-action: none;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .feeling:active, .feeling.dragging {
-    transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-    cursor: grabbing;
   }
   #resetBtn {
     margin-top: 15px;
@@ -73,8 +57,9 @@
     cursor: pointer;
     font-size: 0.9em;
   }
-  #resetBtn:hover { background: #0056b3; }
-
+  #resetBtn:hover {
+    background: #0056b3;
+  }
   /* Popup */
   #popup {
     display: none;
@@ -89,7 +74,9 @@
     text-align: center;
     z-index: 999;
   }
-  #popup h2 { margin-bottom: 10px; }
+  #popup h2 {
+    margin-bottom: 10px;
+  }
   #popup button {
     background: #007bff;
     color: white;
@@ -145,7 +132,9 @@ const data = [
 
 let totalCorrect = 0;
 
-function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
 
 function createGame() {
   totalCorrect = 0;
@@ -179,7 +168,7 @@ function addDragAndTouchEvents() {
   const feelings = document.querySelectorAll('.feeling');
   const situations = document.querySelectorAll('.situation');
 
-  // 🖱️ Mouse drag
+  // Mouse/PC Drag
   feelings.forEach(feeling => {
     feeling.addEventListener('dragstart', e => {
       e.dataTransfer.setData('text', feeling.dataset.feeling);
@@ -197,40 +186,28 @@ function addDragAndTouchEvents() {
     });
   });
 
-  // 👆 Touch/Smart Board drag (smooth)
+  // Touch/Smartboard Drag
   feelings.forEach(feeling => {
     let clone = null;
-    let x = 0, y = 0;
-    let lastX = 0, lastY = 0;
-
     feeling.addEventListener('touchstart', e => {
       const touch = e.touches[0];
       clone = feeling.cloneNode(true);
-      clone.classList.add('dragging');
       clone.style.position = "fixed";
       clone.style.left = touch.clientX - 50 + "px";
       clone.style.top = touch.clientY - 25 + "px";
-      clone.style.opacity = "0.9";
-      clone.style.zIndex = 1000;
+      clone.style.opacity = "0.7";
       clone.style.pointerEvents = "none";
+      clone.style.zIndex = 1000;
       document.body.appendChild(clone);
-      lastX = touch.clientX;
-      lastY = touch.clientY;
     });
 
     feeling.addEventListener('touchmove', e => {
-      e.preventDefault();
       const touch = e.touches[0];
-      x = touch.clientX;
-      y = touch.clientY;
       if (clone) {
-        requestAnimationFrame(() => {
-          clone.style.transform = `translate(${x - lastX}px, ${y - lastY}px) scale(1.1)`;
-        });
         clone.style.left = touch.clientX - 50 + "px";
         clone.style.top = touch.clientY - 25 + "px";
       }
-    }, { passive: false });
+    });
 
     feeling.addEventListener('touchend', e => {
       if (!clone) return;
