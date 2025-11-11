@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rasio Satuan - SDI Biringkaloro</title>
+  <link rel="icon" href="https://logos.textgiraffe.com/logos/logo-name/Ihsan-designstyle-boots-m.png">
+
+  <style>
+    /* RESET & DASAR */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* HEADER */
+    header {
+      background-color: #2196f3;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+
+    header img {
+      height: 45px;
+      width: auto;
+    }
+
+    header h1 {
+      font-size: 1rem;
+      text-align: center;
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    button {
+      background-color: #ff9800;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background-color: #f57c00;
+      transform: scale(1.05);
+    }
+
+    /* GAME AREA */
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      min-height: 400px;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 8px;
+      background-color: #2196f3;
+      color: white;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      header h1 {
+        font-size: 1rem;
+      }
+
+      button {
+        width: 100%;
+        font-size: 1rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="https://ihsantawang022.github.io/" target="_blank" title="Kunjungi Situs Pengembang">
+      <img src="https://logos.textgiraffe.com/logos/logo-name/Ihsan-designstyle-boots-m.png" alt="Logo">
+    </a>
+    <h1>Rasio Satuan - SDI Biringkaloro</h1>
+    <button onclick="document.getElementById('gameFrame').src = document.getElementById('gameFrame').src">
+      🔄 Mulai Ulang
+    </button>
+  </header>
+
+  <iframe 
+    id="gameFrame" 
+    src="https://www.educaplay.com/game/25375481-rasio_dalam_satuan_kelas_6.html" 
+    title="Game Rasio dalam Satuan">
+  </iframe>
+
+  <footer>
+    © 2025 Pembelajaran Matematika SDI Biringkaloro | Dikembangkan oleh <strong>Ihsan Tawang</strong>
+  </footer>
+</body>
+</html>
