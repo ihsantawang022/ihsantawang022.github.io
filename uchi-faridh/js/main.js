@@ -77,7 +77,7 @@ function stopAudio() {
 }
 // lagu end
 
-// undngan start
+// undangan start
 function GetURLParameter(sParam) {
   var sPageURL = window.location.search.substring(1);
   var sURLVariables = sPageURL.split("&");
@@ -88,11 +88,16 @@ function GetURLParameter(sParam) {
     }
   }
 }
+
 var to = GetURLParameter("to");
 if (to) {
-  to = decodeURIComponent(to.replace(/\+/g, " "));
+  // ubah tanda + jadi spasi
+  to = to.replace(/\+/g, " ");
+  // decode karakter URL lain (seperti %2C, %26, dsb)
+  to = decodeURIComponent(to);
 }
 document.getElementById("nama").innerHTML = to ? to : "Tamu Spesial";
+// undangan end
 
 
 // hover blur effect
