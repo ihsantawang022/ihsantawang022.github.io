@@ -59,7 +59,7 @@
               <p class="mb-2 mt-2"><span class="fw-semibold h4" id="nama"></span></p>
               <p class="mb-2">di Tempat</p>
               <button type="button" class="btn bg-berem btn-outline-secondary text-white rounded-4"
-                data-bs-dismiss="modal" onclick="playAudio()">
+                data-bs-dismiss="modal" onclick="playAudio(); openFullscreen();">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-envelope-heart-fill mb-1" viewBox="0 0 16 16">
                   <path
@@ -621,6 +621,33 @@
       once: true,
     });
   </script>
+
+
+<script src="js/jquery-3.6.0.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    function openFullscreen() {
+      var elem = document.documentElement; // Targetkan seluruh halaman HTML
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+      }
+    }
+  </script>
+  </body>
+</html>
+
+
+	
 </body>
 
 </html>
