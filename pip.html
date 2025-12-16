@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Data PIP - UPT SPF SD NEGERI KAKATUA</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        .search-section { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        select { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; }
+        .result-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #fafafa; display: none; }
+        .result-card.active { display: block; }
+        .data-row { display: flex; border-bottom: 1px solid #eee; padding: 8px 0; }
+        .label { font-weight: bold; width: 150px; color: #555; }
+        .value { color: #000; flex: 1; }
+        .highlight { color: #e67e22; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Daftar Penerima PIP 2025<br><small>UPT SPF SD NEGERI KAKATUA</small></h2>
+
+    <div class="search-section">
+        <label for="nameSelect">Pilih Nama Siswa untuk Melihat Info:</label>
+        <select id="nameSelect" onchange="showData()">
+            <option value="">-- Pilih Nama --</option>
+            </select>
+    </div>
+
+    <div id="resultCard" class="result-card">
+        <div class="data-row"><div class="label">Nama:</div><div class="value" id="resNama"></div></div>
+        <div class="data-row"><div class="label">Kelas:</div><div class="value" id="resKelas"></div></div>
+        <div class="data-row"><div class="label">NISN:</div><div class="value" id="resNISN"></div></div>
+        <div class="data-row"><div class="label">Tempat Lahir:</div><div class="value" id="resTempat"></div></div>
+        <div class="data-row"><div class="label">Tgl Lahir:</div><div class="value" id="resTgl"></div></div>
+        <div class="data-row"><div class="label">Pencairan PIP:</div><div class="value highlight" id="resCair"></div></div>
+    </div>
+</div>
+
+<script>
+    // Data dari dokumen 
+    const dataPIP = [
+        { nama: "DEVAN APRILIO HERMANSYAH", kelas: "2", nisn: "3180873049", tempat: "MAKASSAR", tgl: "2018-03-20", cair: "26 Desember 2025" },
+        { nama: "ALMIRA AZZAHRA KHARISMA", kelas: "3", nisn: "3163567779", tempat: "MAKASSAR", tgl: "2016-07-23", cair: "16 Desember 2025" },
+        { nama: "MUHAMMAD KIAN AGUSTIANTO SAPUTRA", kelas: "4", nisn: "3152710696", tempat: "MAKASSAR", tgl: "2015-08-12", cair: "16 Desember 2025" },
+        { nama: "MUH. SYAWAL AL RASYID", kelas: "5", nisn: "3145144523", tempat: "MAKASSAR", tgl: "2014-08-15", cair: "16 Desember 2025" },
+        { nama: "NAUFAL DZAKWAAN MUAAFII", kelas: "5", nisn: "3154420908", tempat: "MAKASSAR", tgl: "2015-02-08", cair: "16 Desember 2025" },
+        { nama: "A. RAFAEYZA TSAQIF ANDRI TAUFIQ S", kelas: "1", nisn: "3197692362", tempat: "MAKASSAR", tgl: "2019-05-27", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD ABDUL SAPUTRA YADO", kelas: "1", nisn: "3199586174", tempat: "Makassar", tgl: "2019-06-26", cair: "26 Desember 2025" },
+        { nama: "ANANDA RIBAS AL GAZALI", kelas: "1", nisn: "3188699381", tempat: "MAKASSAR", tgl: "2018-04-09", cair: "26 Desember 2025" },
+        { nama: "MUH. TAUFIQ HIDAYAT", kelas: "1", nisn: "3180963541", tempat: "Makassar", tgl: "2018-08-08", cair: "26 Desember 2025" },
+        { nama: "AYRA KIRANA SYAM", kelas: "1", nisn: "3199102093", tempat: "MAKASSAR", tgl: "2019-05-30", cair: "26 Desember 2025" },
+        { nama: "SAHL UBAID", kelas: "1", nisn: "3196557506", tempat: "MAKASSAR", tgl: "2019-03-29", cair: "26 Desember 2025" },
+        { nama: "NUR IZZAH ISRAM", kelas: "2", nisn: "3179068501", tempat: "MAKASSAR", tgl: "2017-11-08", cair: "26 Desember 2025" },
+        { nama: "SUBHAN RUSTAM MUHAMMAD", kelas: "2", nisn: "3173474918", tempat: "MAKASSAR", tgl: "2017-08-06", cair: "26 Desember 2025" },
+        { nama: "UFAHIRA QAMELA", kelas: "2", nisn: "3187652542", tempat: "CADIKA", tgl: "2018-05-04", cair: "26 Desember 2025" },
+        { nama: "TAUFIQ RISKY AKBAR", kelas: "2", nisn: "3173059833", tempat: "MAKASSAR", tgl: "2017-10-17", cair: "26 Desember 2025" },
+        { nama: "TASYA AZZAHRA ARFAN", kelas: "2", nisn: "3180408482", tempat: "MAKASSAR", tgl: "2018-02-28", cair: "26 Desember 2025" },
+        { nama: "SALVIA LARINDA PUTRI", kelas: "3", nisn: "3167383265", tempat: "MAKASSAR", tgl: "2016-09-09", cair: "26 Desember 2025" },
+        { nama: "MUH. ALTAF FAEYZA", kelas: "3", nisn: "3165859179", tempat: "NENGO", tgl: "2016-11-09", cair: "26 Desember 2025" },
+        { nama: "KHAYRA ARTA MALAYEKA", kelas: "3", nisn: "3176719019", tempat: "MAKASSAR", tgl: "2016-05-19", cair: "26 Desember 2025" },
+        { nama: "KHANZA MAULIDYA. F", kelas: "3", nisn: "3160972072", tempat: "Makassar", tgl: "2016-12-08", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD YAZID", kelas: "4", nisn: "3169874125", tempat: "MAKASSAR", tgl: "2016-03-27", cair: "26 Desember 2025" },
+        { nama: "A MUH LUKMANUL HAKIM", kelas: "4", nisn: "3162383689", tempat: "MAKASSAR", tgl: "2015-03-03", cair: "26 Desember 2025" },
+        { nama: "RAISYA PRATIWI", kelas: "4", nisn: "3155715025", tempat: "MAKASSAR", tgl: "2015-05-17", cair: "26 Desember 2025" },
+        { nama: "ANINDITHA TRI ANGGRAINI", kelas: "4", nisn: "3156451034", tempat: "MAKASSAR", tgl: "2016-05-14", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD ALIF FEBIAN", kelas: "5", nisn: "3161027868", tempat: "SUKOHARJO", tgl: "2015-01-18", cair: "26 Desember 2025" },
+        { nama: "LATIFA KEMALA DEWI SINAGA", kelas: "5", nisn: "3153628039", tempat: "MAKASSAR", tgl: "2014-10-02", cair: "26 Desember 2025" },
+        { nama: "FAUZAN AL GHAZALI", kelas: "5", nisn: "3144603961", tempat: "MAKASSAR", tgl: "2015-01-17", cair: "26 Desember 2025" },
+        { nama: "MUH ZAINAL ABIDIN", kelas: "5", nisn: "3143609670", tempat: "MAKASSAR", tgl: "2014-05-23", cair: "26 Desember 2025" },
+        { nama: "NASARUDDIN", kelas: "5", nisn: "3144828330", tempat: "MAKASSAR", tgl: "2014-08-23", cair: "26 Desember 2025" },
+        { nama: "NUR AMINA QHOLBY", kelas: "6", nisn: "3130182837", tempat: "MAKASSAR", tgl: "2013-08-24", cair: "26 Desember 2025" },
+        { nama: "MUH.IQBAL ARDIANSYAH", kelas: "6", nisn: "0135248182", tempat: "MAKASSAR", tgl: "2013-05-28", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD FATHURRIZKY", kelas: "6", nisn: "0141084930", tempat: "MAKASSAR", tgl: "2014-03-05", cair: "26 Desember 2025" }
+    ];
+
+    // Mengisi dropdown otomatis
+    const selectEl = document.getElementById('nameSelect');
+    dataPIP.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((item, index) => {
+        let option = document.createElement('option');
+        option.value = index;
+        option.textContent = item.nama;
+        selectEl.appendChild(option);
+    });
+
+    function showData() {
+        const selectedIndex = selectEl.value;
+        const card = document.getElementById('resultCard');
+        
+        if (selectedIndex === "") {
+            card.classList.remove('active');
+            return;
+        }
+
+        const person = dataPIP[selectedIndex];
+        document.getElementById('resNama').textContent = person.nama;
+        document.getElementById('resKelas').textContent = person.kelas;
+        document.getElementById('resNISN').textContent = person.nisn;
+        document.getElementById('resTempat').textContent = person.tempat;
+        document.getElementById('resTgl').textContent = person.tgl;
+        document.getElementById('resCair').textContent = "Paling cepat " + person.cair;
+        
+        card.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
