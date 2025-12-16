@@ -3,45 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pencarian Data PIP - UPT SPF SD NEGERI KAKATUA</title>
+    <title>Cek Dana PIP - SD Negeri Kakatua</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; }
-        .search-section { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
-        select { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; }
-        .result-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #fafafa; display: none; }
+        /* Tema Ceria SD */
+        :root {
+            --primary: #FF6B6B; /* Merah Muda Ceria */
+            --secondary: #4ECDC4; /* Hijau Toska */
+            --accent: #FFE66D; /* Kuning Matahari */
+            --background: #F7FFF7;
+            --text: #2F3E46;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        .container { 
+            max-width: 600px; 
+            margin: auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 5px solid var(--secondary);
+        }
+
+        h2 { 
+            text-align: center; 
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .search-section { 
+            margin-bottom: 25px; 
+            background: #fff9db;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px dashed var(--primary);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        select { 
+            width: 100%;
+            padding: 12px; 
+            font-size: 16px; 
+            border-radius: 12px; 
+            border: 2px solid var(--secondary); 
+            cursor: pointer;
+            outline: none;
+            background-color: white;
+        }
+
+        .result-card { 
+            border: 3px solid var(--accent); 
+            padding: 20px; 
+            border-radius: 20px; 
+            background-color: #fff; 
+            display: none; 
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .result-card.active { display: block; }
-        .data-row { display: flex; border-bottom: 1px solid #eee; padding: 8px 0; }
-        .label { font-weight: bold; width: 150px; color: #555; }
-        .value { color: #000; flex: 1; }
-        .highlight { color: #e67e22; font-weight: bold; }
+
+        .data-row { 
+            display: flex; 
+            border-bottom: 1px solid #f0f0f0; 
+            padding: 10px 0; 
+        }
+
+        .label { font-weight: bold; width: 130px; color: #777; }
+        .value { font-weight: bold; color: var(--text); flex: 1; }
+        
+        .status-box {
+            margin-top: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Daftar Penerima PIP 2025<br><small>UPT SPF SD NEGERI KAKATUA</small></h2>
+    <h2>🌟 Cek Pencairan PIP 🌟</h2>
+    <span class="subtitle">UPT SPF SD NEGERI KAKATUA</span>
 
     <div class="search-section">
-        <label for="nameSelect">Pilih Nama Siswa untuk Melihat Info:</label>
+        <label for="nameSelect">Cari Nama Siswa di Sini:</label>
         <select id="nameSelect" onchange="showData()">
-            <option value="">-- Pilih Nama --</option>
-            </select>
+            <option value="">-- Pilih Nama Siswa --</option>
+        </select>
     </div>
 
     <div id="resultCard" class="result-card">
-        <div class="data-row"><div class="label">Nama:</div><div class="value" id="resNama"></div></div>
-        <div class="data-row"><div class="label">Kelas:</div><div class="value" id="resKelas"></div></div>
-        <div class="data-row"><div class="label">NISN:</div><div class="value" id="resNISN"></div></div>
-        <div class="data-row"><div class="label">Tempat Lahir:</div><div class="value" id="resTempat"></div></div>
-        <div class="data-row"><div class="label">Tgl Lahir:</div><div class="value" id="resTgl"></div></div>
-        <div class="data-row"><div class="label">Pencairan PIP:</div><div class="value highlight" id="resCair"></div></div>
+        <div class="data-row"><div class="label">Nama Lengkap</div><div class="value" id="resNama"></div></div>
+        <div class="data-row"><div class="label">Kelas</div><div class="value" id="resKelas"></div></div>
+        <div class="data-row"><div class="label">NISN</div><div class="value" id="resNISN"></div></div>
+        <div class="data-row"><div class="label">Tempat Lahir</div><div class="value" id="resTempat"></div></div>
+        <div class="data-row"><div class="label">Tgl Lahir</div><div class="value" id="resTgl"></div></div>
+        
+        <div class="status-box">
+            📅 <strong>Jadwal Pencairan:</strong><br>
+            <span id="resCair"></span>
+        </div>
     </div>
+    
+    <div class="footer-note">Data berdasarkan lampiran PIP Desember 2025</div>
 </div>
 
 <script>
-    // Data dari dokumen 
+    // Data diambil dari dokumen sumber 
     const dataPIP = [
         { nama: "DEVAN APRILIO HERMANSYAH", kelas: "2", nisn: "3180873049", tempat: "MAKASSAR", tgl: "2018-03-20", cair: "26 Desember 2025" },
         { nama: "ALMIRA AZZAHRA KHARISMA", kelas: "3", nisn: "3163567779", tempat: "MAKASSAR", tgl: "2016-07-23", cair: "16 Desember 2025" },
@@ -49,20 +155,20 @@
         { nama: "MUH. SYAWAL AL RASYID", kelas: "5", nisn: "3145144523", tempat: "MAKASSAR", tgl: "2014-08-15", cair: "16 Desember 2025" },
         { nama: "NAUFAL DZAKWAAN MUAAFII", kelas: "5", nisn: "3154420908", tempat: "MAKASSAR", tgl: "2015-02-08", cair: "16 Desember 2025" },
         { nama: "A. RAFAEYZA TSAQIF ANDRI TAUFIQ S", kelas: "1", nisn: "3197692362", tempat: "MAKASSAR", tgl: "2019-05-27", cair: "26 Desember 2025" },
-        { nama: "MUHAMMAD ABDUL SAPUTRA YADO", kelas: "1", nisn: "3199586174", tempat: "Makassar", tgl: "2019-06-26", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD ABDUL SAPUTRA YADO", kelas: "1", nisn: "3199586174", tempat: "MAKASSAR", tgl: "2019-06-26", cair: "26 Desember 2025" },
         { nama: "ANANDA RIBAS AL GAZALI", kelas: "1", nisn: "3188699381", tempat: "MAKASSAR", tgl: "2018-04-09", cair: "26 Desember 2025" },
-        { nama: "MUH. TAUFIQ HIDAYAT", kelas: "1", nisn: "3180963541", tempat: "Makassar", tgl: "2018-08-08", cair: "26 Desember 2025" },
+        { nama: "MUH. TAUFIQ HIDAYAT", kelas: "1", nisn: "3180963541", tempat: "MAKASSAR", tgl: "2018-08-08", cair: "26 Desember 2025" },
         { nama: "AYRA KIRANA SYAM", kelas: "1", nisn: "3199102093", tempat: "MAKASSAR", tgl: "2019-05-30", cair: "26 Desember 2025" },
         { nama: "SAHL UBAID", kelas: "1", nisn: "3196557506", tempat: "MAKASSAR", tgl: "2019-03-29", cair: "26 Desember 2025" },
         { nama: "NUR IZZAH ISRAM", kelas: "2", nisn: "3179068501", tempat: "MAKASSAR", tgl: "2017-11-08", cair: "26 Desember 2025" },
-        { nama: "SUBHAN RUSTAM MUHAMMAD", kelas: "2", nisn: "3173474918", tempat: "MAKASSAR", tgl: "2017-08-06", cair: "26 Desember 2025" },
+        { nama: "SUBHAN RUSTAM MUHAMMAD UWAIS AL-FAHREZI", kelas: "2", nisn: "3173474918", tempat: "MAKASSAR", tgl: "2017-08-06", cair: "26 Desember 2025" },
         { nama: "UFAHIRA QAMELA", kelas: "2", nisn: "3187652542", tempat: "CADIKA", tgl: "2018-05-04", cair: "26 Desember 2025" },
         { nama: "TAUFIQ RISKY AKBAR", kelas: "2", nisn: "3173059833", tempat: "MAKASSAR", tgl: "2017-10-17", cair: "26 Desember 2025" },
         { nama: "TASYA AZZAHRA ARFAN", kelas: "2", nisn: "3180408482", tempat: "MAKASSAR", tgl: "2018-02-28", cair: "26 Desember 2025" },
         { nama: "SALVIA LARINDA PUTRI", kelas: "3", nisn: "3167383265", tempat: "MAKASSAR", tgl: "2016-09-09", cair: "26 Desember 2025" },
         { nama: "MUH. ALTAF FAEYZA", kelas: "3", nisn: "3165859179", tempat: "NENGO", tgl: "2016-11-09", cair: "26 Desember 2025" },
         { nama: "KHAYRA ARTA MALAYEKA", kelas: "3", nisn: "3176719019", tempat: "MAKASSAR", tgl: "2016-05-19", cair: "26 Desember 2025" },
-        { nama: "KHANZA MAULIDYA. F", kelas: "3", nisn: "3160972072", tempat: "Makassar", tgl: "2016-12-08", cair: "26 Desember 2025" },
+        { nama: "KHANZA MAULIDYA. F", kelas: "3", nisn: "3160972072", tempat: "MAKASSAR", tgl: "2016-12-08", cair: "26 Desember 2025" },
         { nama: "MUHAMMAD YAZID", kelas: "4", nisn: "3169874125", tempat: "MAKASSAR", tgl: "2016-03-27", cair: "26 Desember 2025" },
         { nama: "A MUH LUKMANUL HAKIM", kelas: "4", nisn: "3162383689", tempat: "MAKASSAR", tgl: "2015-03-03", cair: "26 Desember 2025" },
         { nama: "RAISYA PRATIWI", kelas: "4", nisn: "3155715025", tempat: "MAKASSAR", tgl: "2015-05-17", cair: "26 Desember 2025" },
@@ -77,8 +183,9 @@
         { nama: "MUHAMMAD FATHURRIZKY", kelas: "6", nisn: "0141084930", tempat: "MAKASSAR", tgl: "2014-03-05", cair: "26 Desember 2025" }
     ];
 
-    // Mengisi dropdown otomatis
     const selectEl = document.getElementById('nameSelect');
+    
+    // Urutkan dan masukkan ke dropdown
     dataPIP.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((item, index) => {
         let option = document.createElement('option');
         option.value = index;
@@ -101,7 +208,7 @@
         document.getElementById('resNISN').textContent = person.nisn;
         document.getElementById('resTempat').textContent = person.tempat;
         document.getElementById('resTgl').textContent = person.tgl;
-        document.getElementById('resCair').textContent = "Paling cepat " + person.cair;
+        document.getElementById('resCair').textContent = "Paling cepat tanggal " + person.cair;
         
         card.classList.add('active');
     }
