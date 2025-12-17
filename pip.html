@@ -126,7 +126,7 @@
     <div class="search-section">
         <label for="nameSelect">Cari Nama Siswa di Sini:</label>
         <select id="nameSelect" onchange="showData()">
-            <option value="">-- Pilih Nama Siswa --</option>
+            <option value="">-- Pilih Nama Siswa (Urut Kelas) --</option>
         </select>
     </div>
 
@@ -162,7 +162,7 @@
         { nama: "SAHL UBAID", kelas: "1", nisn: "3196557506", tempat: "MAKASSAR", tgl: "2019-03-29", cair: "26 Desember 2025" },
         { nama: "NUR IZZAH ISRAM", kelas: "2", nisn: "3179068501", tempat: "MAKASSAR", tgl: "2017-11-08", cair: "26 Desember 2025" },
         { nama: "MUHAMMAD SUBHAN RUSTAM", kelas: "2", nisn: "3173474918", tempat: "MAKASSAR", tgl: "2017-08-06", cair: "26 Desember 2025" },
-		{ nama: "MUHAMMAD UWAIS AL-FAHREZI", kelas: "2", nisn: "3180873049", tempat: "MAKASSAR", tgl: "2018-03-20", cair: "26 Desember 2025" },
+        { nama: "MUHAMMAD UWAIS AL-FAHREZI", kelas: "2", nisn: "3180873049", tempat: "MAKASSAR", tgl: "2018-03-20", cair: "26 Desember 2025" },
         { nama: "UFAHIRA QAMELA", kelas: "2", nisn: "3187652542", tempat: "CADIKA", tgl: "2018-05-04", cair: "26 Desember 2025" },
         { nama: "TAUFIQ RISKY AKBAR", kelas: "2", nisn: "3173059833", tempat: "MAKASSAR", tgl: "2017-10-17", cair: "26 Desember 2025" },
         { nama: "TASYA AZZAHRA ARFAN", kelas: "2", nisn: "3180408482", tempat: "MAKASSAR", tgl: "2018-02-28", cair: "26 Desember 2025" },
@@ -186,11 +186,19 @@
 
     const selectEl = document.getElementById('nameSelect');
     
-    // Urutkan dan masukkan ke dropdown
-    dataPIP.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((item, index) => {
+    // 1. Sort berdasarkan Kelas (numerik) kemudian Nama (alfabetis)
+    dataPIP.sort((a, b) => {
+        if (a.kelas !== b.kelas) {
+            return a.kelas - b.kelas;
+        }
+        return a.nama.localeCompare(b.nama);
+    });
+
+    // 2. Masukkan ke dropdown dengan format "NAMA (Kelas X)"
+    dataPIP.forEach((item, index) => {
         let option = document.createElement('option');
         option.value = index;
-        option.textContent = item.nama;
+        option.textContent = `${item.nama} (Kelas ${item.kelas})`;
         selectEl.appendChild(option);
     });
 
